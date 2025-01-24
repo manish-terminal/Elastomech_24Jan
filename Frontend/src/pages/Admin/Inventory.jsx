@@ -12,6 +12,8 @@ const Inventory = () => {
   const [newItem, setNewItem] = useState({ name: "", rate: 0, quantity: 0 });
   const [selectedCategory, setSelectedCategory] = useState("rubber");
   const [searchQuery, setSearchQuery] = useState(""); // State for search query
+  const [userRole, setUserRole] = useState(null); // Track the user role
+
 
   // Fetch all items from the backend
   const fetchItems = async () => {
@@ -30,7 +32,16 @@ const Inventory = () => {
     }
   };
 
+  // useEffect(() => {
+  //   fetchItems();
+  // }, []);
+
   useEffect(() => {
+    // Retrieve user data from localStorage
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user) {
+      setUserRole(user.role);
+    }
     fetchItems();
   }, []);
 
@@ -239,162 +250,156 @@ const Inventory = () => {
 
       {/* Rubber Section */}
       <motion.div
-  className="inventory-section bg-white p-6 m-5 rounded-lg shadow-md mb-6"
-  initial={{ opacity: 0 }}
-  animate={{ opacity: 1 }}
-  transition={{ duration: 0.5 }}
->
-  <h3 className="text-2xl font-semibold text-gray-700 mb-4 sm:text-3xl">Rubber</h3>
-  <div className="overflow-x-auto"> {/* Added a wrapper for horizontal scroll */}
-    <table className="min-w-full border-collapse border border-gray-300 text-left">
-      <thead className="bg-gray-100">
-        <tr>
-          <th className="py-2 px-4 border-b border-gray-300">Name</th>
-          <th className="py-2 px-4 border-b border-gray-300">Rate per Kg (₹)</th>
-          <th className="py-2 px-4 border-b border-gray-300">Available Quantity (Kg)</th>
-          <th className="py-2 px-4 border-b border-gray-300">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {filteredRubberIngredients.map((item, index) => (
-          <tr key={item._id} className="even:bg-gray-50">
-            <td className="py-3 px-4 border-b border-gray-300">{item.name}</td>
-            <td className="py-3 px-4 border-b border-gray-300">
-              {isEditing ? (
-                <input
-                  type="number"
-                  value={item.rate}
-                  onChange={(e) =>
-                    handleRateChange(index, "rubber", e.target.value)
-                  }
-                  className="w-full rounded-lg border border-gray-300 py-2 px-3 text-gray-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              ) : (
-                item.rate
-              )}
-            </td>
-            <td className="py-3 px-4 border-b border-gray-300">
-              {isEditing ? (
-                <input
-                  type="number"
-                  value={item.quantity}
-                  onChange={(e) =>
-                    handleQuantityChange(index, "rubber", e.target.value)
-                  }
-                  className="w-full rounded-lg border border-gray-300 py-2 px-3 text-gray-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              ) : (
-                item.quantity
-              )}
-            </td>
-            <td className="py-3 px-4 border-b border-gray-300">
-              {isEditing && (
-                <button
-                  onClick={() => handleDeleteItem(item.name)}
-                  className="px-4 py-2 rounded-lg bg-red-600 text-white shadow-sm hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-500"
-                >
-                  <FaTrashAlt />
-                </button>
-              )}
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
-</motion.div>
-
+        className="inventory-section bg-white p-6 m-5 rounded-lg shadow-md mb-6"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
+        <h3 className="text-2xl font-semibold text-gray-700 mb-4 sm:text-3xl">Rubber</h3>
+        <table className="min-w-full border-collapse border border-gray-300 text-left">
+          <thead className="bg-gray-100">
+            <tr>
+              <th className="py-2 px-4 border-b border-gray-300">Name</th>
+              <th className="py-2 px-4 border-b border-gray-300">Rate per Kg (₹)</th>
+              <th className="py-2 px-4 border-b border-gray-300">Available Quantity (Kg)</th>
+              <th className="py-2 px-4 border-b border-gray-300">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredRubberIngredients.map((item, index) => (
+              <tr key={item._id} className="even:bg-gray-50">
+                <td className="py-3 px-4 border-b border-gray-300">{item.name}</td>
+                <td className="py-3 px-4 border-b border-gray-300">
+                  {isEditing ? (
+                    <input
+                      type="number"
+                      value={item.rate}
+                      onChange={(e) =>
+                        handleRateChange(index, "rubber", e.target.value)
+                      }
+                      className="w-full rounded-lg border border-gray-300 py-2 px-3 text-gray-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  ) : (
+                    item.rate
+                  )}
+                </td>
+                <td className="py-3 px-4 border-b border-gray-300">
+                  {isEditing ? (
+                    <input
+                      type="number"
+                      value={item.quantity}
+                      onChange={(e) =>
+                        handleQuantityChange(index, "rubber", e.target.value)
+                      }
+                      className="w-full rounded-lg border border-gray-300 py-2 px-3 text-gray-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  ) : (
+                    item.quantity
+                  )}
+                </td>
+                <td className="py-3 px-4 border-b border-gray-300">
+                  {isEditing && (
+                    <button
+                      onClick={() => handleDeleteItem(item.name)}
+                      className="px-4 py-2 rounded-lg bg-red-600 text-white shadow-sm hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-500"
+                    >
+                      <FaTrashAlt />
+                    </button>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </motion.div>
 
       {/* Chemicals Section */}
       <motion.div
-  className="inventory-section bg-white p-6 rounded-lg shadow-md mb-6"
-  initial={{ opacity: 0 }}
-  animate={{ opacity: 1 }}
-  transition={{ duration: 0.5 }}
->
-  <h3 className="text-2xl font-semibold text-gray-700 mb-4 sm:text-3xl">Chemicals</h3>
-  
-  {/* Wrapper for table scroll */}
-  <div className="overflow-x-auto">
-    <table className="min-w-full border-collapse border border-gray-300 text-left">
-      <thead className="bg-gray-100">
-        <tr>
-          <th className="py-2 px-4 border-b border-gray-300">Name</th>
-          <th className="py-2 px-4 border-b border-gray-300">Rate (₹)</th>
-          <th className="py-2 px-4 border-b border-gray-300">Available Quantity (Kg)</th>
-          <th className="py-2 px-4 border-b border-gray-300">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {filteredChemicals.map((item, index) => (
-          <tr key={item._id} className="even:bg-gray-50">
-            <td className="py-3 px-4 border-b border-gray-300">{item.name}</td>
-            <td className="py-3 px-4 border-b border-gray-300">
-              {isEditing ? (
-                <input
-                  type="number"
-                  value={item.rate}
-                  onChange={(e) =>
-                    handleRateChange(index, "chemical", e.target.value)
-                  }
-                  className="w-full rounded-lg border border-gray-300 py-2 px-3 text-gray-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              ) : (
-                item.rate
-              )}
-            </td>
-            <td className="py-3 px-4 border-b border-gray-300">
-              {isEditing ? (
-                <input
-                  type="number"
-                  value={item.quantity}
-                  onChange={(e) =>
-                    handleQuantityChange(index, "chemical", e.target.value)
-                  }
-                  className="w-full rounded-lg border border-gray-300 py-2 px-3 text-gray-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              ) : (
-                item.quantity
-              )}
-            </td>
-            <td className="py-3 px-4 border-b border-gray-300">
-              {isEditing && (
-                <button
-                  onClick={() => handleDeleteItem(item.name)}
-                  className="px-4 py-2 rounded-lg bg-red-600 text-white shadow-sm hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-500"
-                >
-                  <FaTrashAlt />
-                </button>
-              )}
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
-</motion.div>
+        className="inventory-section bg-white p-6 rounded-lg shadow-md mb-6"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
+        <h3 className="text-2xl font-semibold text-gray-700 mb-4 sm:text-3xl">Chemicals</h3>
+        <table className="min-w-full border-collapse border border-gray-300 text-left">
+          <thead className="bg-gray-100">
+            <tr>
+              <th className="py-2 px-4 border-b border-gray-300">Name</th>
+              <th className="py-2 px-4 border-b border-gray-300">Rate (₹)</th>
+              <th className="py-2 px-4 border-b border-gray-300">Available Quantity (Kg)</th>
+              <th className="py-2 px-4 border-b border-gray-300">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredChemicals.map((item, index) => (
+              <tr key={item._id} className="even:bg-gray-50">
+                <td className="py-3 px-4 border-b border-gray-300">{item.name}</td>
+                <td className="py-3 px-4 border-b border-gray-300">
+                  {isEditing ? (
+                    <input
+                      type="number"
+                      value={item.rate}
+                      onChange={(e) =>
+                        handleRateChange(index, "chemical", e.target.value)
+                      }
+                      className="w-full rounded-lg border border-gray-300 py-2 px-3 text-gray-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  ) : (
+                    item.rate
+                  )}
+                </td>
+                <td className="py-3 px-4 border-b border-gray-300">
+                  {isEditing ? (
+                    <input
+                      type="number"
+                      value={item.quantity}
+                      onChange={(e) =>
+                        handleQuantityChange(index, "chemical", e.target.value)
+                      }
+                      className="w-full rounded-lg border border-gray-300 py-2 px-3 text-gray-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  ) : (
+                    item.quantity
+                  )}
+                </td>
+                <td className="py-3 px-4 border-b border-gray-300">
+                  {isEditing && (
+                    <button
+                      onClick={() => handleDeleteItem(item.name)}
+                      className="px-4 py-2 rounded-lg bg-red-600 text-white shadow-sm hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-500"
+                    >
+                      <FaTrashAlt />
+                    </button>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </motion.div>
 
-
-      <div className="flex justify-center mb-6">
-        <button
-          onClick={handleEditToggle}
-          className={`px-6 py-3 rounded-lg shadow-md font-medium text-white ${
-            isEditing
-              ? "bg-blue-600 hover:bg-blue-500"
-              : "bg-green-600 hover:bg-green-500"
-          } transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500`}
-        >
-          {isEditing ? (
-            <>
-              <FaSave className="inline-block mr-2" /> Save Changes
-            </>
-          ) : (
-            <>
-              <FaEdit className="inline-block mr-2" /> Edit Inventory
-            </>
-          )}
-        </button>
-      </div>
+      {userRole !== "worker" && (
+        <div className="flex justify-center mb-6">
+          <button
+            onClick={handleEditToggle}
+            className={`px-6 py-3 rounded-lg shadow-md font-medium text-white ${
+              isEditing
+                ? "bg-blue-600 hover:bg-blue-500"
+                : "bg-green-600 hover:bg-green-500"
+            } transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500`}
+          >
+            {isEditing ? (
+              <>
+                <FaSave className="inline-block mr-2" /> Save Changes
+              </>
+            ) : (
+              <>
+                <FaEdit className="inline-block mr-2" /> Edit Inventory
+              </>
+            )}
+          </button>
+        </div>
+      )}
     </div>
   );
 };
