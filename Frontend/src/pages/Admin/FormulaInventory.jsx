@@ -333,7 +333,7 @@ const FormulaInventory = () => {
           className="w-full sm:w-64 px-4 py-2 rounded-md border border-gray-300 focus:outline-none bg-gray-100 cursor-not-allowed"
           placeholder="Batch Weight (kg)"
         />
-        <input
+        <input min="0"
           type="number"
           name="numberOfBatches"
           placeholder="Number of Batches"

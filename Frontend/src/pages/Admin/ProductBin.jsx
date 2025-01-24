@@ -413,7 +413,7 @@ const ProductBin = () => {
 
         <div className="form-group">
           <label className="block text-lg">{productForm.manufacturing === 'Extrusion' ? 'Expected production per hour' : 'No. of Expected Cycles per 24 hrs'}</label>
-          <input
+          <input min="0"
             type="number"
             name="expectedCycles"
             value={productForm.expectedCycles}
@@ -425,7 +425,7 @@ const ProductBin = () => {
 
         <div className="form-group">
           <label className="block text-lg">No. of Labours Required</label>
-          <input
+          <input min="0"
             type="number"
             name="noOfLabours"
             value={productForm.noOfLabours}
