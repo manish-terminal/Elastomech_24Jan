@@ -22,6 +22,22 @@ const [selectedArticle, setSelectedArticle] = useState("");
 
 const [formulas, setFormulas] = useState([]); // New state to store formulas with names
 
+const sendToWhatsapp=()=>{
+  const message = `New Order Details:
+Order ID: ${generateOrderID()}
+Customer Name: ${customerName}
+Item Name: ${itemName}
+Weight per Product: ${weightPerProduct}
+Quantity: ${quantity}
+Delivery Date: ${deliveryDate}
+Remarks: ${remarks}
+
+Please process this order as per the given details.`;
+  const whatsappNumber="919305650955"
+  const whatsappLink=`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`
+  window.open(whatsappLink,"_blank")
+}
+
 // Fetch formulas from your API or data source
 useEffect(() => {
   const fetchFormulas = async () => {
@@ -261,7 +277,7 @@ const handleArticleSelect = (selectedId) => {
 
         <div>
           <label htmlFor="quantity">Quantity:</label>
-          <input
+          <input min="0"
             id="quantity"
             type="number"
             value={quantity}
@@ -328,6 +344,8 @@ const handleArticleSelect = (selectedId) => {
         <button onClick={handlePrint}>Print</button>
         <button onClick={resetForm}>Clear</button>
         <button onClick={handleSubmitOrder}>Add Order to Production</button>
+        <button onClick={sendToWhatsapp}>Whatsapp</button>
+
       </div>
     </div>
   );
