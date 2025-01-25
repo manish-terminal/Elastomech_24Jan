@@ -17,6 +17,7 @@ export const getAllOrders = async (req, res) => {
 export const createOrder = async (req, res) => {
   try {
     const {
+      orderId,
       customerName,
       itemName,
       weightPerProduct,
@@ -28,12 +29,12 @@ export const createOrder = async (req, res) => {
     } = req.body;
 
     // Generate Order ID logic
-    const date = new Date();
-    const dateString = `${String(date.getDate()).padStart(2, "0")}${String(
-      date.getMonth() + 1
-    ).padStart(2, "0")}${String(date.getFullYear()).slice(-2)}`;
-    const orderNumber = await Order.countDocuments();
-    const orderId = `OD${dateString}-${String(orderNumber+1).padStart(2, "0")}`;
+    // const date = new Date();
+    // const dateString = `${String(date.getDate()).padStart(2, "0")}${String(
+    //   date.getMonth() + 1
+    // ).padStart(2, "0")}${String(date.getFullYear()).slice(-2)}`;
+    // const orderNumber = await Order.countDocuments();
+    // const orderId = `OD${dateString}-${String(orderNumber+1).padStart(2, "0")}`;
 
     const newOrder = new Order({
       orderId,

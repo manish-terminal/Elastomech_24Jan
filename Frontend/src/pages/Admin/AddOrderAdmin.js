@@ -49,9 +49,20 @@ useEffect(() => {
 
       // Parse the JSON data
       const data = await response.json();
+      const currentDate = new Date();
+      const dateString = `${String(currentDate.getDate()).padStart(2, "0")}${String(currentDate.getMonth() + 1).padStart(2, "0")}${String(currentDate.getFullYear()).slice(-2)}`;
+
+        // Filter orders that match today's date
+        const todayOrders = data.filter(order => order.orderId.startsWith(`OD${dateString}`));
+
+        // Count orders for today
+        const countForToday = todayOrders.length + 1; // +1 to start from 1 for new day
+
+        // Set the order count for today
+        setOrderCount(countForToday);
 
       // Set the order count in state
-      setOrderCount(data.length); // Set the number of orders
+     // Set the number of orders
     } catch (error) {
       console.error("Error fetching orders:", error);
     }
@@ -206,7 +217,7 @@ const handleArticleSelect = (selectedId) => {
   const handleSubmitOrder = async () => {
     try {
       const orderData = {
-        orderId: generateOrderID(),
+        orderId:generateOrderID(),
         customerName,
         itemName,
         weightPerProduct,
