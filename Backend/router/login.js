@@ -2,8 +2,8 @@ import express from "express";
 
 // Predefined users with username, password, and role
 const users = [
-  { username: "admin", password: "admin123", role: "admin" },
-  { username: "worker", password: "worker123", role: "worker" },
+  { username: "admin", password: "admin123@", role: "admin" },
+  { username: "worker", password: "worker123@", role: "worker" },
 ];
 
 // Function to generate random token

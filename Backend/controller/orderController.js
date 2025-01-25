@@ -29,9 +29,11 @@ export const createOrder = async (req, res) => {
 
     // Generate Order ID logic
     const date = new Date();
-    const dateString = `${date.getFullYear()}${String(date.getMonth() + 1).padStart(2, "0")}${String(date.getDate()).padStart(2, "0")}`;
+    const dateString = `${String(date.getDate()).padStart(2, "0")}${String(
+      date.getMonth() + 1
+    ).padStart(2, "0")}${String(date.getFullYear()).slice(-2)}`;
     const orderNumber = await Order.countDocuments();
-    const orderId = `ELAST${dateString}${String(orderNumber + 1).padStart(2, "0")}`;
+    const orderId = `OD${dateString}-${String(orderNumber+1).padStart(2, "0")}`;
 
     const newOrder = new Order({
       orderId,

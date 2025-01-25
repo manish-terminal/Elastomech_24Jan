@@ -3,7 +3,7 @@ import axios from "axios";
 import "./addorder.css";
 
 function AddOrder() {
-  const [customerName, setCustomerName] = useState("");
+const [customerName, setCustomerName] = useState("");
 const [itemName, setItemName] = useState("");
 const [weightPerProduct, setWeightPerProduct] = useState(0);
 const [quantity, setQuantity] = useState(0);
@@ -12,7 +12,7 @@ const [remarks, setRemarks] = useState("");
 const [orderNumber, setOrderNumber] = useState(1);
 const [orderDescription, setOrderDescription] = useState("");
 const [selectedProduct, setSelectedProduct] = useState(null); // State for the selected product
-
+const [orderCount, setOrderCount] = useState(0);
 const printRef = useRef(); // Ref for the printable section
 
 const [articles, setArticles] = useState([]);
@@ -32,11 +32,33 @@ Delivery Date: ${deliveryDate}
 Remarks: ${remarks}
 
 Please process this order as per the given details.`;
-  const whatsappNumber="919305650955"
+  const whatsappNumber="919834362025"
   const whatsappLink=`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`
   window.open(whatsappLink,"_blank")
   console.log(selectedArticle)
 }
+
+
+useEffect(() => {
+  const fetchOrders = async () => {
+    try {
+      const response = await fetch("http://localhost:5001/api/orders");
+      if (!response.ok) {
+        throw new Error("Failed to fetch orders");
+      }
+
+      // Parse the JSON data
+      const data = await response.json();
+
+      // Set the order count in state
+      setOrderCount(data.length); // Set the number of orders
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+    }
+  };
+
+  fetchOrders();
+}, []);
 
 // Fetch formulas from your API or data source
 useEffect(() => {
@@ -122,8 +144,9 @@ const generateOrderID = () => {
     date.getMonth() + 1
   ).padStart(2, "0")}${String(date.getFullYear()).slice(-2)}`;
 
-  return `OD${dateString}-${String(orderNumber).padStart(2, "0")}`;
+  return `OD${dateString}-${String(orderCount+1).padStart(2, "0")}`;
 };
+
 
 const handlePrint = () => {
   const printContents = printRef.current.innerHTML;

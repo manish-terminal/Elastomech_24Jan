@@ -6,6 +6,39 @@ import "./Orders.css";
 const Orders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortedData, setSortedData] = useState(orders);
+  const [sortConfig, setSortConfig] = useState({ key: "orderId", direction: "asc" });
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const handleSort = (key) => {
+    let direction = "asc";
+    if (sortConfig.key === key && sortConfig.direction === "asc") {
+      direction = "desc";
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const sortedOrders = () => {
+    const filteredOrders = orders.filter((order) =>
+      order.orderId.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.itemName.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    const sorted = [...filteredOrders].sort((a, b) => {
+      if (sortConfig.direction === "asc") {
+        return a[sortConfig.key] > b[sortConfig.key] ? 1 : -1;
+      } else {
+        return a[sortConfig.key] < b[sortConfig.key] ? 1 : -1;
+      }
+    });
+
+    return sorted;
+  };
+
 
   // Fetch orders from the API when the component mounts
   useEffect(() => {
@@ -147,86 +180,104 @@ const Orders = () => {
       <p className="text-center text-gray-500 text-lg">Loading orders...</p>
     ) : (
       <div className="overflow-x-auto">
-        <table className="min-w-full table-auto bg-white border-collapse rounded-lg shadow">
-          <thead>
-            <tr className="bg-gray-200 text-sm md:text-base text-gray-600">
-              <th className="py-3 px-4 text-left">Order ID</th>
-              <th className="py-3 px-4 text-left">Item Name</th>
-              <th className="py-3 px-4 text-left">Status</th>
-              <th className="py-3 px-4 text-left">Priority</th>
-              <th className="py-3 px-4 text-left">Actions</th>
+          <input
+        type="text"
+        placeholder="Search by Order ID or Item Name"
+        value={searchTerm}
+        onChange={handleSearchChange}
+        className="mb-4 py-2 px-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm md:text-base"
+      />
+
+      <table className="min-w-full table-auto bg-white border-collapse rounded-lg shadow">
+        <thead>
+          <tr className="bg-gray-200 text-sm md:text-base text-gray-600">
+            <th
+              className="py-3 px-4 text-left cursor-pointer"
+              onClick={() => handleSort("orderId")}
+            >
+              Order ID
+            </th>
+            <th
+              className="py-3 px-4 text-left cursor-pointer"
+              onClick={() => handleSort("itemName")}
+            >
+              Item Name
+            </th>
+            <th className="py-3 px-4 text-left">Status</th>
+            <th className="py-3 px-4 text-left">Priority</th>
+            <th className="py-3 px-4 text-left">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {sortedOrders().map((order) => (
+            <tr
+              key={order._id}
+              className="border-b border-gray-300 hover:bg-gray-50 transition-all duration-300"
+            >
+              <td className="py-3 px-4 text-gray-700 text-sm md:text-base">
+                {order.orderId}
+              </td>
+              <td className="py-3 px-4 text-gray-700 text-sm md:text-base">
+                {order.itemName}
+              </td>
+              <td className="py-3 px-4">
+                <div className="flex items-center space-x-3">
+                  {order.status === "completed" && (
+                    <FiCheck className="text-green-500 text-lg" />
+                  )}
+                  {order.status === "in transit" && (
+                    <FiTruck className="text-blue-500 text-lg" />
+                  )}
+                  {order.status === "pending" && (
+                    <FiClock className="text-yellow-500 text-lg" />
+                  )}
+                  {order.status === "in process" && (
+                    <FiInfo className="text-gray-500 text-lg" />
+                  )}
+                  <select
+                    value={order.status}
+                    onChange={(e) =>
+                      handleStatusChange(order._id, e.target.value)
+                    }
+                    className="py-2 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm md:text-base"
+                  >
+                    <option value="pending">Pending</option>
+                    <option value="completed">Completed</option>
+                    <option value="in process">In Process</option>
+                    <option value="in transit">In Transit</option>
+                  </select>
+                </div>
+              </td>
+              <td className="py-3 px-4">
+                <select
+                  value={order.priority}
+                  onChange={(e) =>
+                    handlePriorityChange(order._id, e.target.value)
+                  }
+                  className="py-2 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm md:text-base"
+                >
+                  <option value="low">Low</option>
+                  <option value="normal">Normal</option>
+                  <option value="high">High</option>
+                </select>
+              </td>
+              <td className="py-3 px-4">
+                <select
+                  value={order.action}
+                  onChange={(e) =>
+                    handleActionChange(order._id, e.target.value)
+                  }
+                  className="py-2 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm md:text-base"
+                >
+                  <option value="Move to Dispatch">Move to Dispatch</option>
+                  <option value="Shipped">Shipped</option>
+                  <option value="Delivered">Delivered</option>
+                </select>
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            {orders.map((order) => (
-              <tr
-                key={order._id}
-                className="border-b border-gray-300 hover:bg-gray-50 transition-all duration-300"
-              >
-                <td className="py-3 px-4 text-gray-700 text-sm md:text-base">
-                  {order.orderId}
-                </td>
-                <td className="py-3 px-4 text-gray-700 text-sm md:text-base">
-                  {order.itemName}
-                </td>
-                <td className="py-3 px-4">
-                  <div className="flex items-center space-x-3">
-                    {order.status === "completed" && (
-                      <FiCheck className="text-green-500 text-lg" />
-                    )}
-                    {order.status === "in transit" && (
-                      <FiTruck className="text-blue-500 text-lg" />
-                    )}
-                    {order.status === "pending" && (
-                      <FiClock className="text-yellow-500 text-lg" />
-                    )}
-                    {order.status === "in process" && (
-                      <FiInfo className="text-gray-500 text-lg" />
-                    )}
-                    <select
-                      value={order.status}
-                      onChange={(e) =>
-                        handleStatusChange(order._id, e.target.value)
-                      }
-                      className="py-2 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm md:text-base"
-                    >
-                      <option value="pending">Pending</option>
-                      <option value="completed">Completed</option>
-                      <option value="in process">In Process</option>
-                      <option value="in transit">In Transit</option>
-                    </select>
-                  </div>
-                </td>
-                <td className="py-3 px-4">
-                  <select
-                    value={order.priority}
-                    onChange={(e) =>
-                      handlePriorityChange(order._id, e.target.value)
-                    }
-                    className="py-2 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm md:text-base"
-                  >
-                    <option value="low">Low</option>
-                    <option value="normal">Normal</option>
-                    <option value="high">High</option>
-                  </select>
-                </td>
-                <td className="py-3 px-4">
-                  <select
-                    value={order.action}
-                    onChange={(e) =>
-                      handleActionChange(order._id, e.target.value)
-                    }
-                    className="py-2 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm md:text-base"
-                  >
-                    <option value="Move to Dispatch">Move to Dispatch</option>
-                    <option value="Shipped">Shipped</option>
-                    <option value="Delivered">Delivered</option>
-                  </select>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+          ))}
+        </tbody>
+      </table>
       </div>
     )}
   </motion.div>
