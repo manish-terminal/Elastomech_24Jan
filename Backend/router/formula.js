@@ -73,7 +73,7 @@ const logIngredientUsage = async (ingredients, numberOfBatches, orderNo, remarks
         particulars: `Used in Order ${orderNo}`,
         inward: 0,
         outward: totalMaterialUsed,
-        remarks: `Deduction for ${numberOfBatches} batches of formula ${ingredient.name} Remarks:(${remarks})`,
+        remarks: `Deduction for ${numberOfBatches} batches of formula \nRemarks:(${remarks})`,
       });
 
       console.log('Ingredient usage logged:', response.data);

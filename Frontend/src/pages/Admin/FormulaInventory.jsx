@@ -64,13 +64,13 @@ const FormulaInventory = () => {
   
       // Parse the JSON response
       const data = await response.json();
-      console.log("Response Data:", data);
+      // console.log("Response Data:", data);
   
       // Assuming you have a state variable `logs` to store the fetched logs
       setLogs(data.logs); // Update the state with the fetched logs
     } catch (error) {
-      console.error("Error fetching logs:", error);
-      alert("Error fetching logs. Please try again.");
+      // console.error("Error fetching logs:", error);
+      // alert("Error fetching logs. Please try again.");
     }
   };
   

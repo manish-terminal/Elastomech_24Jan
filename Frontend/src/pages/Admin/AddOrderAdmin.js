@@ -21,12 +21,11 @@ const [searchTerm, setSearchTerm] = useState("");
 const [selectedArticle, setSelectedArticle] = useState("");
 
 const [formulas, setFormulas] = useState([]); // New state to store formulas with names
-
 const sendToWhatsapp=()=>{
   const message = `New Order Details:
 Order ID: ${generateOrderID()}
 Customer Name: ${customerName}
-Item Name: ${selectedArticle}
+Item Name: ${itemName}
 Weight per Product: ${weightPerProduct}
 Quantity: ${quantity}
 Delivery Date: ${deliveryDate}
@@ -157,6 +156,8 @@ const handleArticleSelect = (selectedId) => {
   console.log("Selected Product:", selectedProduct); // Ensure we found the correct product
 
   if (selectedProduct) {
+    setItemName(selectedProduct.articleName);
+     
     console.log("Formulations:", selectedProduct.formulations); // Check if formulations exist and have fillWeight
 
     // Sum all the fillWeight values from formulations
@@ -264,6 +265,7 @@ const handleArticleSelect = (selectedId) => {
         ))}
       </select>
         </div>
+   
 
         <div>
           <label htmlFor="weightPerProduct">Fill Weight (kg):</label>
