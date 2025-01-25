@@ -26,7 +26,7 @@ const sendToWhatsapp=()=>{
   const message = `New Order Details:
 Order ID: ${generateOrderID()}
 Customer Name: ${customerName}
-Item Name: ${itemName}
+Item Name: ${selectedArticle}
 Weight per Product: ${weightPerProduct}
 Quantity: ${quantity}
 Delivery Date: ${deliveryDate}
@@ -36,6 +36,7 @@ Please process this order as per the given details.`;
   const whatsappNumber="919305650955"
   const whatsappLink=`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`
   window.open(whatsappLink,"_blank")
+  console.log(selectedArticle)
 }
 
 // Fetch formulas from your API or data source
